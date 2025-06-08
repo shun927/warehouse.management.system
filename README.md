@@ -56,8 +56,7 @@ NEXT_PUBLIC_SUPABASE_URL="YOUR_SUPABASE_URL"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"
 SUPABASE_SERVICE_ROLE_KEY="YOUR_SUPABASE_SERVICE_ROLE_KEY" # If used for admin tasks on the backend
 
-# Gemini API Key (if still used, as per original README)
-GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+
 
 # NextAuth.js (if you add it later)
 # NEXTAUTH_URL="http://localhost:3000"
