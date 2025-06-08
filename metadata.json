@@ -1,0 +1,8 @@
+{
+  "name": "Shiba Lab 倉庫管理システム",
+  "description": "Shiba Labの備品・機材を管理するためのウェブアプリケーション。QRコードによる簡単な貸出・返却処理、在庫管理、ユーザー管理機能を提供します。",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}

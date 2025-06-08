@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shiba Lab 倉庫管理システム</title>
+  <!-- Tailwind CSS is now handled via postcss and global.css -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <style>
+    /* Basic font style moved to global.css or app/layout.tsx */
+    /* Minimal body style to prevent issues if this HTML is somehow rendered */
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
+      margin: 0;
+      background-color: #f3f4f6; /* bg-gray-100 */
+    }
+  </style>
+  <!-- Importmap removed as Next.js handles module resolution -->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+    "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+    "html5-qrcode": "https://esm.sh/html5-qrcode@^2.3.8",
+    "qrcode": "https://esm.sh/qrcode@^1.5.4",
+    "next/": "https://esm.sh/next@^15.3.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <noscript>このアプリを使用するにはJavaScriptを有効にする必要があります。</noscript>
+  <div id="root">
+    <!-- 
+      In a Next.js application, content is typically rendered into the <body> tag
+      by Next.js itself, often within a <div id="__next"></div>.
+      This #root div might not be used by Next.js unless specifically configured.
+      For now, it's left here, but the primary rendering mechanism changes.
+    -->
+  </div>
+  <!-- Service Worker registration can remain, but its effectiveness/scope might need review with Next.js routing -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

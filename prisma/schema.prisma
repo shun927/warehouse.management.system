@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // url      = "postgresql://postgres:IVu2tmDyG0FCQdcE@db.vaxircqahgayztmdymif.supabase.co:5432/postgres"
+}
+
+// Shiba Labメンバー
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  name      String
+  role      Role     @default(MEMBER)
+  rentals   Rental[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // Added updatedAt
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+// 部品マスタ
+model Item {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  imageUrl    String?
+  quantity    Int      // 在庫数
+  type        ItemType
+  categoryId  String?  @db.Uuid // Added categoryId
+  category    Category? @relation(fields: [categoryId], references: [id]) // Added category relation
+  boxId       String?  @db.Uuid
+  box         Box?     @relation(fields: [boxId], references: [id])
+  rentals     Rental[]
+  qrCodeUrl   String?  // 生成したQRコードの情報を保持 (Optionalに変更)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt // Added updatedAt
+}
+
+enum ItemType {
+  UNIQUE      // 1点モノ
+  COUNTABLE   // 数量管理
+  CONSUMABLE  // 消耗品
+}
+
+// カテゴリ
+model Category {
+  id    String @id @default(uuid()) @db.Uuid
+  name  String @unique
+  items Item[] // Added relation to items
+  createdAt DateTime @default(now()) // Added createdAt
+  updatedAt DateTime @updatedAt // Added updatedAt
+}
+
+// 箱
+model Box {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String
+  warehouseId String     @db.Uuid
+  warehouse   Warehouse  @relation(fields: [warehouseId], references: [id])
+  items       Item[]
+  movements   Movement[]
+  qrCodeUrl   String?    // (Optionalに変更)
+  createdAt   DateTime @default(now()) // Added createdAt
+  updatedAt   DateTime @updatedAt // Added updatedAt
+}
+
+// 倉庫
+model Warehouse {
+  id            String     @id @default(uuid()) @db.Uuid
+  name          String
+  boxes         Box[]
+  movementsFrom Movement[] @relation("MovementFrom") // Added relation for movements originating from this warehouse
+  movementsTo   Movement[] @relation("MovementTo")   // Added relation for movements targeting this warehouse
+  createdAt     DateTime @default(now()) // Added createdAt
+  updatedAt     DateTime @updatedAt // Added updatedAt
+}
+
+// 貸出履歴
+model Rental {
+  id         String    @id @default(uuid()) @db.Uuid
+  itemId     String    @db.Uuid
+  item       Item      @relation(fields: [itemId], references: [id])
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id])
+  quantity   Int       // 貸出数量
+  rentedAt   DateTime  @default(now())
+  dueDate    DateTime  // 返却予定日
+  returnedAt DateTime? // 実際の返却日時
+  createdAt  DateTime @default(now()) // Added createdAt
+  updatedAt  DateTime @updatedAt // Added updatedAt
+}
+
+// 箱の移動履歴
+model Movement {
+  id              String   @id @default(uuid()) @db.Uuid
+  boxId           String   @db.Uuid
+  box             Box      @relation(fields: [boxId], references: [id])
+  fromWarehouseId String   @db.Uuid // Added foreign key for source warehouse
+  fromWarehouse   Warehouse @relation(name: "MovementFrom", fields: [fromWarehouseId], references: [id]) // Changed from String to relation
+  toWarehouseId   String   @db.Uuid   // Added foreign key for target warehouse
+  toWarehouse     Warehouse @relation(name: "MovementTo", fields: [toWarehouseId], references: [id])     // Changed from String to relation
+  movedAt         DateTime @default(now())
+  createdAt       DateTime @default(now()) // Added createdAt
+  updatedAt       DateTime @updatedAt // Added updatedAt
+}
